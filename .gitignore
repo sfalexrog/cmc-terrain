@@ -1,0 +1,7 @@
+.vscode/
+build/
+build_web/
+
+*.o
+*.so
+*.a

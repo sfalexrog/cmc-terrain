@@ -1,0 +1,59 @@
+<html>
+    <!-- Base HTML template for Emscripten, based on work by @floooh -->
+    <head>
+        <meta charset="utf-8"/>
+        <title>terrain</title>
+        <style>
+            body {
+                margin: 0;
+                background-color: black;
+            }
+            .viewport {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                margin: 0px;
+                border: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas class="viewport" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+        <script type="text/javascript">
+        var Module = {
+            preRun: [],
+            postRun: [],
+            print: (function() {
+                return function(text) {
+                    text = Array.prototype.slice.call(arguments).join(' ');
+                    console.log(text);
+                };
+            })(),
+            printErr: (function() {
+                return function(text) {
+                    text = Array.prototype.slice.call(arguments).join(' ');
+                    console.error(text);
+                }
+            })(),
+            canvas: (function() {
+                const canvas = document.getElementById('canvas');
+                canvas.addEventListener("webglcontextlost", function(e) {
+                    alert('WebGL context lost; reload the page');
+                    e.preventDefault();
+                }, false);
+                return canvas;
+            })(),
+            setStatus: function(text) { },
+            monitorRunDependencies: function(left) { },
+        };
+        window.onerror = function(event) {
+            console.log("onerror: " + event.message);
+        }
+        </script>
+        {{{ SCRIPT }}}
+    </body>
+</html>
