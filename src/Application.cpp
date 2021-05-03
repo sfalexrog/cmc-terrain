@@ -117,13 +117,19 @@ int Application::run()
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
     gl_ctx = SDL_GL_CreateContext(window->window.get());
+
+    assert(nullptr != gl_ctx);
+    SDL_Log("Vendor: %s", glGetString(GL_VENDOR));
+    SDL_Log("Version: %s", glGetString(GL_VERSION));
+    SDL_Log("Renderer: %s", glGetString(GL_RENDERER));
+    SDL_Log("Extenstions: %s", glGetString(GL_EXTENSIONS));
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -132,7 +138,7 @@ int Application::run()
     ImGui::StyleColorsDark();
 
     ImGui_ImplSDL2_InitForOpenGL(window->window.get(), gl_ctx);
-    ImGui_ImplOpenGL3_Init("#version 100");
+    ImGui_ImplOpenGL3_Init("#version 300 es");
 
     io.Fonts->AddFontDefault();
 

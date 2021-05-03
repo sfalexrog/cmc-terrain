@@ -18,5 +18,6 @@ if(EMSCRIPTEN)
             SUFFIX .html)
     target_link_options(terrain
         PRIVATE
-            --shell-file ${EMSCRIPTEN_BASE_HTML})
+            --shell-file ${EMSCRIPTEN_BASE_HTML}
+            -s MAX_WEBGL_VERSION=2)
 endif()

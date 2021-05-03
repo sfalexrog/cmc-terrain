@@ -36,7 +36,7 @@ target_include_directories(imgui_impl
 
 target_compile_definitions(imgui_impl
     PUBLIC
-    IMGUI_IMPL_OPENGL_ES2)
+    IMGUI_IMPL_OPENGL_ES3)
 
 target_link_libraries(imgui_impl
     PRIVATE
