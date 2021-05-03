@@ -46,3 +46,5 @@ target_link_libraries(imgui_impl
 
 add_library(Imgui::Imgui ALIAS imgui)
 add_library(Imgui::ImguiImpl ALIAS imgui_impl)
+
+add_subdirectory(glm)
