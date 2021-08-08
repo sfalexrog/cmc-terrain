@@ -1,10 +1,15 @@
 #include "Application.hpp"
 
+#include "SdlObjects/SdlWindow.hpp"
+#include "SdlObjects/SdlGlContext.hpp"
+
 #include <GLES2/gl2.h>
 
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
+
+#include <SDL.h>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -17,7 +22,7 @@ void tick_trampoline(void* classptr)
 
 #endif
 
-Application::Application(int argc, char** argv) : should_quit(false), gl_ctx(nullptr)
+Application::Application(int argc, char** argv) : should_quit(false)
 {
     (void)argc;
     (void)argv;
@@ -27,7 +32,7 @@ Application::Application(int argc, char** argv) : should_quit(false), gl_ctx(nul
 
 Application::~Application()
 {
-    SDL_GL_DeleteContext(gl_ctx);
+    context.reset();
     window.reset();
     SDL_Log("Quitting");
     SDL_Quit();
@@ -103,7 +108,7 @@ void Application::tick()
 
     // Rendering
     ImGui::Render();
-    SDL_GL_MakeCurrent(window->window.get(), gl_ctx);
+    SDL_GL_MakeCurrent(window->window.get(), context->ctx);
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
     glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -115,17 +120,9 @@ int Application::run()
 {
     window.reset(new Sdl::Window("terrain", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 800, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE));
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    context.reset(new Sdl::GlContext(*window));
 
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
-    gl_ctx = SDL_GL_CreateContext(window->window.get());
-
-    assert(nullptr != gl_ctx);
+    assert(nullptr != context->ctx);
     SDL_Log("Vendor: %s", glGetString(GL_VENDOR));
     SDL_Log("Version: %s", glGetString(GL_VERSION));
     SDL_Log("Renderer: %s", glGetString(GL_RENDERER));
@@ -137,7 +134,7 @@ int Application::run()
 
     ImGui::StyleColorsDark();
 
-    ImGui_ImplSDL2_InitForOpenGL(window->window.get(), gl_ctx);
+    ImGui_ImplSDL2_InitForOpenGL(window->window.get(), context->ctx);
     ImGui_ImplOpenGL3_Init("#version 300 es");
 
     io.Fonts->AddFontDefault();
