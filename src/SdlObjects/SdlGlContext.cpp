@@ -19,7 +19,7 @@ EGLNativeWindowType getNativeWindow(SDL_Window *w)
                 return NULL;
 #if defined(SDL_VIDEO_DRIVER_WINDOWS)
             case SDL_SYSWM_WINDOWS:
-                return (EGLNativeWindowType)info.info.window;
+                return (EGLNativeWindowType)info.info.win.window;
 #endif
 #if defined(SDL_VIDEO_DRIVER_WINRT)
             case SDL_SYSWM_WINRT:
