@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL_config.h>
 #include <SDL_video.h>
 #include <memory>
 

@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 project(terrain_main)
 
 add_library(terrain_libs SHARED
+    SdlObjects/SdlGlContext.cpp
     Util/Random.cpp)
 
 target_include_directories(terrain_libs PUBLIC
@@ -10,6 +11,7 @@ target_include_directories(terrain_libs PUBLIC
 
 target_link_libraries(terrain_libs PUBLIC
     GLESv2
+    EGL
     SDL2::SDL2
     SDL2::SDL2main
     Imgui::Imgui

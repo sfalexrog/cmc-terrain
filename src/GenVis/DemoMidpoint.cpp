@@ -38,6 +38,7 @@ struct Application
     rng::Xorshift128p generator;
     rng::Xorshift128p::state savedGeneratorState;
 
+    int firstGeneration = 0;
     int currentGeneration = 0;
 
     std::vector<MidpointLine> lines;
@@ -129,7 +130,7 @@ void Application::drawMidpointLine()
     auto height = ImGui::GetWindowHeight();
     auto offset = ImGui::GetWindowPos();
 
-    for(size_t gen = 0; gen <= currentGeneration; ++gen)
+    for(size_t gen = firstGeneration; gen <= currentGeneration; ++gen)
     {
         for(size_t i = 0; i < lines[gen].points.size() - 1; ++i)
         {
@@ -139,7 +140,7 @@ void Application::drawMidpointLine()
             auto y1 = - (p1.y * height) + height / 2.0f + offset.y;
             auto x2 = p2.x * width + offset.x;
             auto y2 = - (p2.y * height) + height / 2.0f + offset.y;
-            float alpha = (gen + 1.0f) / (currentGeneration + 1.0f);
+            float alpha = (gen - firstGeneration + 1.0f) / (currentGeneration - firstGeneration + 1.0f);
             drawList->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), ImColor(1.0f, 1.0f, 0.0f, alpha));
         }
     }
@@ -175,7 +176,9 @@ void Application::tick()
         rebuildLines();
     }
 
-    if (ImGui::SliderInt("Generation", &currentGeneration, 0, NUM_GENERATIONS - 1))
+    ImGui::SliderInt("First generation", &firstGeneration, 0, currentGeneration);
+
+    if (ImGui::SliderInt("Last generation", &currentGeneration, 0, NUM_GENERATIONS - 1))
     {
         std::cout << "Requested generation changed to " << currentGeneration << std::endl;
     }
@@ -189,7 +192,8 @@ void Application::tick()
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    SDL_GL_SwapWindow(window->window.get());
+    //SDL_GL_SwapWindow(window->window.get());
+    context->swap();
 }
 
 
