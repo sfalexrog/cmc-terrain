@@ -122,30 +122,12 @@ GlContext::GlContext(Window& w, uint32_t flags): dpy(EGL_NO_DISPLAY), major(0), 
         EGL_CONTEXT_MAJOR_VERSION, 3,
         EGL_CONTEXT_MINOR_VERSION, 0,
         EGL_CONTEXT_OPENGL_DEBUG, (flags & SDL_GL_CONTEXT_DEBUG_FLAG) ? EGL_TRUE : EGL_FALSE,
-        EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE, (flags & SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) ? EGL_TRUE : EGL_FALSE,
-        EGL_CONTEXT_OPENGL_ROBUST_ACCESS, (flags & SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG) ? EGL_TRUE : EGL_FALSE,
-        EGL_CONTEXT_OPENGL_RESET_NOTIFICATION_STRATEGY, (flags | SDL_GL_CONTEXT_RESET_ISOLATION_FLAG) ? EGL_LOSE_CONTEXT_ON_RESET : EGL_NO_RESET_NOTIFICATION,
         EGL_NONE, EGL_NONE
     };
     ctx = eglCreateContext(dpy, configs[0], EGL_NO_CONTEXT, contextAttribs);
 
     // 5. Connect context to surface
     eglMakeCurrent(dpy, windowSurface, windowSurface, ctx);
-
-/*
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
-    ctx = SDL_GL_CreateContext(w.window.get()); */
 }
 
 bool GlContext::swap()
